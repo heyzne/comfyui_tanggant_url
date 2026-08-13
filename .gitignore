@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 本地凭证（勿提交）
+config.json
+
+# 系统文件
+.DS_Store
+Thumbs.db
