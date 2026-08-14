@@ -1,7 +1,5 @@
 # comfyui_tanggant_url
 
-腾讯云 AIGC 生图 ComfyUI 自定义节点（URL 参考图版），基于《腾讯云 AIGC 生图 — 外部对接文档 v2》实现：提交生图任务 → 轮询状态 → 下载结果图。
-
 ## 节点
 
 ### 1. Tencent AIGC Config（`api/TencentAIGC`）
