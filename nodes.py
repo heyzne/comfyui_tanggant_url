@@ -207,6 +207,7 @@ class TencentAigcImage:
         headers = {"X-App-Id": cfg["app_id"], "X-Api-Key": cfg["api_key"]}
         deadline = time.time() + cfg["max_wait"]
         last = {}
+        last_status = None
 
         while time.time() < deadline:
             time.sleep(cfg["poll_interval"])
@@ -216,7 +217,9 @@ class TencentAigcImage:
             if last.get("code") != 200:
                 raise RuntimeError(f"查询状态失败: {last.get('message')}")
             status = last.get("data", {}).get("status", "")
-            print(f"[TencentAIGC] 任务 {tencent_task_id} 状态: {status}")
+            if status != last_status:  # 只在状态变化时打印一次
+                print(f"[TencentAIGC] 任务 {tencent_task_id} 状态: {status}")
+                last_status = status
             if status in ("FINISH", "FAIL", "ABORTED"):
                 return last
 
