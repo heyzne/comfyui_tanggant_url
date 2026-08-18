@@ -135,9 +135,10 @@ class TencentAigcImage:
             "required": {
                 "prompt": ("STRING", {"multiline": True, "default": ""}),
                 "resolution": (["1K", "2K", "4K"], {"default": "2K"}),
-                "aspectRatio": (["empty", "1:1", "3:4", "4:3", "9:16", "16:9"],
+                "aspectRatio": (["empty", "1:1", "3:4", "4:3", "9:16", "16:9",
+                                 "21:9", "4:5", "5:4", "3:2", "2:3"],
                                 {"default": "empty",
-                                 "tooltip": "empty = 不发送该字段，使用服务端默认"}),
+                                 "tooltip": "empty = 传入空值，保持参考图原始比例"}),
                 "skip_error": ("BOOLEAN", {"default": False,
                                            "tooltip": "开启后失败不中断，返回黑图，错误见 response"}),
                 "seed": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff,
@@ -146,6 +147,10 @@ class TencentAigcImage:
             },
             "optional": optional,
         }
+
+    # 服务端当前支持的宽高比（非法/残留值视为 empty，不发送）
+    VALID_RATIOS = {"1:1", "3:4", "4:3", "9:16", "16:9",
+                    "21:9", "4:5", "5:4", "3:2", "2:3"}
 
     RETURN_TYPES = ("IMAGE", "STRING", "STRING")
     RETURN_NAMES = ("image", "url", "response")
@@ -186,8 +191,15 @@ class TencentAigcImage:
             "modelName": cfg["model_name"],
             "modelVersion": cfg["model_version"],
         }
-        if aspect_ratio != "empty":
-            body["aspectRatio"] = aspect_ratio
+        ratio = (aspect_ratio or "").strip()
+        if ratio in self.VALID_RATIOS:
+            body["aspectRatio"] = ratio
+        else:
+            # empty / 旧工作流残留值：传空字符串，让服务端保持参考图原始比例
+            if ratio not in ("", "empty"):
+                print(f"[TencentAIGC] 忽略无效的 aspectRatio={ratio!r}，"
+                      f"改为传入空值（保持原始比例）")
+            body["aspectRatio"] = ""
 
         resp = requests.post(
             f"{cfg['base_url']}/tencent-aigc-image",
