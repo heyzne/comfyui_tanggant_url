@@ -1,7 +1,7 @@
 [project]
 name = "comfyui_tanggant_url"
 description = "腾讯云 AIGC 生图 ComfyUI 节点（URL 参考图版）：提交任务、轮询状态、下载结果图"
-version = "1.0.0"
+version = "1.1.0"
 license = { text = "MIT" }
 authors = [{ name = "heyzen" }]
 dependencies = ["requests", "Pillow", "numpy", "torch"]
@@ -9,7 +9,6 @@ dependencies = ["requests", "Pillow", "numpy", "torch"]
 [project.urls]
 Repository = "https://github.com/heyzen/comfyui_tanggant_url"
 
-# Comfy Registry (comfy-cli) 发布配置
 [tool.comfy]
 PublisherId = "heyzen"
 DisplayName = "comfyui_tanggant_url"
